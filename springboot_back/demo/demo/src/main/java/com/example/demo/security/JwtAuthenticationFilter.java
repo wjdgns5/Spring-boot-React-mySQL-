@@ -9,6 +9,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -21,13 +23,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     public final JwtTokenProvider jwtTokenProvider;
     public final UserRepository userRepository;
+    public final UserDetailsService userDetailsService;
 
-    public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider, UserRepository userRepository) {
+    public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider, UserRepository userRepository, UserDetailsService userDetailsService) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.userRepository = userRepository;
+        this.userDetailsService = userDetailsService;
     } // end of 생성자
 
-    // doFilterInternal() : 스프링 시큐리티나 스프링 웹 필터에서, 요청이 들어올 때마다 실행되는 핵심 필터 메서드 
+    // doFilterInternal() : 스프링 시큐리티나 스프링 웹 필터에서, 요청이 들어올 때마다 실행되는 핵심 필터 메서드
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
@@ -39,6 +43,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String username = jwtTokenProvider.getUsernameFromToken(token); // 토큰 내용 확인
             User user = userRepository.findByUsername(username).orElse(null); // db에서 username 조회
 
+            // userDetailsService 에서 사용자의 권한이나 정보들을 가져온다.
+            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+
             // user 가 null 이 아닌 경우
             if(user != null) {
                 // UsernamePasswordAuthenticationToken : 이 사용자가 인증되었다 는 정보를 담는 상자
@@ -46,7 +53,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 // credentials : 비밀번호 같은 인증 정보
                 // authorities : 권한 목록
               UsernamePasswordAuthenticationToken authentication =
-                                    new UsernamePasswordAuthenticationToken(user, null, null);
+                                    new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
               // 스프링 시큐리티에게 "현재 요청은 이 사용자가 인증된 상태다” 라고 등록하는 부분
                 SecurityContextHolder.getContext().setAuthentication(authentication);
