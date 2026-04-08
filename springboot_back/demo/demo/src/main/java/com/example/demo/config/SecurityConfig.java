@@ -22,6 +22,9 @@ public class SecurityConfig {
                                                    JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception{
 
         http
+                // cors : React 같은 다른 출처(Origin)에서 오는 요청을 허용하기 위한 설정
+                .cors(cors-> cors.configurationSource(corsConfigurationSource()))
+
                 // AbstractHttpConfigurer : JWT 기반 인증 환경에서 기본 인증 방식을 끄는 데 사용
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable) // 기본적으로 제공하는 로그인 폼 비활성화

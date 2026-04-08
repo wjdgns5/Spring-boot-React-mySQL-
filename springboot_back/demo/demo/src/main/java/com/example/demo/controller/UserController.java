@@ -43,7 +43,7 @@ public class UserController {
 
     // 로그인 http://localhost:8080/api/auth/login
     @PostMapping("/login")
-    public ResponseEntity<LoginRequestDTO> login(@RequestBody LoginRequestDTO request, HttpServletResponse response) {
+    public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO request, HttpServletResponse response) {
 
         LoginResponseDTO tokens = userService.login(request);
 
@@ -56,7 +56,7 @@ public class UserController {
 
         // accessToken은 응답 body(JSON)로 내려줌
         // refreshToken은 이미 쿠키로 보냈기 때문에 body에는 null 처리
-        return ResponseEntity.ok(new LoginRequestDTO(tokens.getAccessToken(), null));
+        return ResponseEntity.ok(new LoginResponseDTO(tokens.getAccessToken(), null));
     } // end of login
 
     // 토큰 만료 시 refreshToken 재 발급 http://localhost:8080/api/auth/refresh
