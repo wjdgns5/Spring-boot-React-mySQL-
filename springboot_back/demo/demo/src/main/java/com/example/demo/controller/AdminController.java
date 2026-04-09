@@ -28,7 +28,7 @@ public class AdminController {
     }
 
     // http://localhost:8080/api/admin/user
-    @GetMapping("/user")
+    @GetMapping("/users")
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }

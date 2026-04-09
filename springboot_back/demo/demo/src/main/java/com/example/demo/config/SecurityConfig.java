@@ -28,11 +28,11 @@ public class SecurityConfig {
                 // AbstractHttpConfigurer : JWT 기반 인증 환경에서 기본 인증 방식을 끄는 데 사용
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable) // 기본적으로 제공하는 로그인 폼 비활성화
-                .httpBasic(Customizer.withDefaults())
+                .httpBasic(AbstractHttpConfigurer::disable) // HTTP Basic 인증 방식을 비활성화(Disable)하는 코드
                 .authorizeHttpRequests(auth-> auth
                         .requestMatchers("/api/public/**").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/admin/**").hasAnyRole("ADMIN") // ADMIN 만 접근가능
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN") // ADMIN 만 접근가능
                         .requestMatchers("/api/private/**").hasAnyRole("USER","ADMIN")
                             // hasAnyRole : 사용자가 지정된 권한(Role) 중 하나라도 가지고 있으면 접근을 허용하는 메소드
                         .anyRequest().denyAll())

@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Cookies from "js-cookie"; // Cookie
 
 function LoginPage() {
   const [username, setUsername] = useState("");
@@ -20,6 +21,12 @@ function LoginPage() {
         { withCredentials: true },
         // withCredentials : (AJAX 요청) 도메인이 다를 때도 쿠키를 공유하여 로그인 상태를 유지해야 할 때 필수
       );
+
+      Cookies.set("accessToken", res.data.accessToken, {
+        expires: 0.021, // 0.021 × 24시간 = 0.504시간 (30분)
+        path: "/",
+      }); // 쿠키에 accessToken 값을 저장(set)
+
       alert("로그인 성공! Access Token : " + res.data.accessToken);
       navigate("/"); // home 페이지로 이동
     } catch (err) {
