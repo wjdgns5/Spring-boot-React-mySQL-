@@ -52,7 +52,7 @@ public class UserService {
 
         // ---- 로그인 할때 "Access 토큰"과 "Refresh 토큰"을 함께 보내줘야 한다. ----
         // AccessToken(엑세스 토큰)을 보내야 한다.
-        String accessToken = jwtTokenProvider.generateAccessToken(user.getUsername());
+        String accessToken = jwtTokenProvider.generateAccessToken(user.getUsername(), user.getRole());
         // RefreshToken(리프레시 토큰)을 보내야 한다.
         String refreshToken = jwtTokenProvider.generateRefreshToken(user.getUsername());
 
