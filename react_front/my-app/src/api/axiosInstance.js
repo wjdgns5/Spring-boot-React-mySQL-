@@ -21,4 +21,42 @@ axiosInstance.interceptors.request.use(
   (error) => Promise.reject(error),
 );
 
+axiosInstance.interceptors.response.use(
+  (res) => res,
+  async (err) => {
+    const originalRequest = err.config;
+
+    // || err.response?.status === 403
+    if (
+      (err.response?.status === 401 || err.response?.status === 403) &&
+      !originalRequest._retry
+    ) {
+      originalRequest._retry = true;
+
+      try {
+        const res = await axios.post(
+          "http://localhost:8080/api/auth/refresh",
+          {},
+          { withCredentials: true },
+        );
+
+        const newAccessToken = res.data.accessToken;
+
+        Cookies.set("accessToken", newAccessToken, {
+          expires: 0.021,
+          path: "/",
+        });
+
+        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+        return axiosInstance(originalRequest);
+      } catch (refreshError) {
+        console.log("Refresh 실패:", refreshError);
+        window.location.href = "/login";
+      }
+    }
+
+    return Promise.reject(err);
+  },
+);
+
 export default axiosInstance;

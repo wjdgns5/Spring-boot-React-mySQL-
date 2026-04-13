@@ -6,6 +6,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Component;
 
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 
@@ -13,7 +14,13 @@ import java.util.Date;
 @Component
 public class JwtTokenProvider {
 
+    // 고정키 테스트
+//    private static final String SECRET = "my-secret-key-my-secret-key-my-secret-key-1234";
+//    private final Key key = Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
+
+    // 이전에 쓰던거 고정키 없을 때
     private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+
     private final long expiration = 1000L * 60 * 60; // 1시간 , expiration : "만료"
 
     // JWT 토큰 생성 과정
@@ -29,12 +36,13 @@ public class JwtTokenProvider {
     // 엑세스 토큰
     public String generateAccessToken(String username, String role) {
         long expiration_30m = 1000L * 60 * 30; // (60초 * 30분) 30분
+        long expiration_30s = 1000L * 30; // 30초 // 테스트용
 
         return Jwts.builder()
                 .setSubject(username)
                 .claim("role", role)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() +expiration_30m) )
+                .setExpiration(new Date(System.currentTimeMillis() +expiration_30s) )
                 .signWith(key)
                 .compact();
     } // end of generateAccessToken
@@ -42,6 +50,7 @@ public class JwtTokenProvider {
     // 리프레시 토큰
     public String generateRefreshToken(String username) {
         long expiration_7d = 1000L * 60 * 60 * 24 * 7; // (60초 * 60분) * 24 = 1일 , 1일 * 7 = 7일
+        long expiration_40s = 1000L * 40; // 40초 // 테스트용
 
         return Jwts.builder()
                 .setSubject(username)

@@ -13,7 +13,9 @@ function AdminPage() {
     } catch (err) {
       console.error("사용자 목록 불러오기 실패:", err);
       alert("사용자 정보를 불러오는데 실패했습니다.");
-      navigate("/"); // 실패하면 홈페이지로 이동
+      // navigate("/"); // 실패하면 홈페이지로 이동
+      console.log("상태코드:", err.response?.status);
+      console.log("응답 데이터:", err.response?.data);
     }
   };
 
