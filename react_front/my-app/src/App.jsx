@@ -9,6 +9,7 @@ import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { setUserFromToken } from "./store/userSlice";
 import Cookies from "js-cookie";
+import OAuthRedirectKakaoPage from "./pages/OAuthRedirectPage";
 
 function App() {
   // Redux store에 액션(action)을 보내기 위한 함수
@@ -34,6 +35,10 @@ function App() {
           <Route path="/signup" element={<SignupPage />}></Route>
           <Route path="/login" element={<LoginPage />}></Route>
           <Route path="/admin" element={<AdminPage />}></Route>
+          <Route
+            path="/oauth2/redirect/kakao"
+            element={<OAuthRedirectKakaoPage />}
+          ></Route>
         </Routes>
       </div>
     </Router>

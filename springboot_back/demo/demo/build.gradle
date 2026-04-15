@@ -37,6 +37,9 @@ dependencies {
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5' // JWT 처리에 필요한 구현체
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5' // JWT Payload를 JSON 형식으로 변환하기 위해 필요한 라이브러리
 
+    // oauth2
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client' // oauth
+
 }
 
 tasks.named('test') {

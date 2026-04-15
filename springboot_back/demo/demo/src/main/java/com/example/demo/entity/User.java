@@ -22,7 +22,7 @@ public class User {
     @Column(name = "username", nullable = false, length = 100)
     private String username;
 
-    @Column(name = "password", nullable = false, length = 100)
+    @Column(name = "password", nullable = true, length = 100)
     private String password;
 
     @Column(name = "role", nullable = false, length = 10)
@@ -30,5 +30,11 @@ public class User {
 
     @Column(name = "refresh_token", nullable = true, length = 500)
     private String refreshToken;
+
+    public User(String username, String password, String roleUser) {
+        this.username = username;
+        this.role = roleUser;
+        this.password = password;
+    }
 
 }

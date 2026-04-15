@@ -16,6 +16,11 @@ function LoginPage() {
 
   const navigate = useNavigate();
 
+  // 카카오 관련
+  const KAKAO_REST_API_KEY = "[RESTAPI 키]";
+  const KAKAO_REDIRECT_URI = "http://localhost:5173/oauth2/redirect/kakao";
+  const KAKAO_AUTH_LOGIN_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${KAKAO_REST_API_KEY}&redirect_uri=${KAKAO_REDIRECT_URI}&response_type=code`;
+
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
@@ -45,6 +50,11 @@ function LoginPage() {
     }
   };
 
+  // 카카오 로그인
+  const handleKakaoLogin = () => {
+    window.location.href = KAKAO_AUTH_LOGIN_URL;
+  };
+
   return (
     <div className="auth-container">
       <h2>로그인</h2>
@@ -63,6 +73,12 @@ function LoginPage() {
 
         <button type="submit">로그인</button>
       </form>
+
+      <div className="social-login">
+        <button onClick={handleKakaoLogin} className="kakao-btn">
+          <p>카카오 로그인</p>
+        </button>
+      </div>
     </div>
   );
 }

@@ -5,6 +5,7 @@ import com.example.demo.dto.LoginResponseDTO;
 import com.example.demo.dto.UserRequestDTO;
 import com.example.demo.entity.User;
 import com.example.demo.repository.UserRepository;
+import com.example.demo.service.KakaoOAuthService;
 import com.example.demo.service.UserService;
 import com.example.demo.util.JwtTokenProvider;
 import jakarta.servlet.http.Cookie;
@@ -14,17 +15,21 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/auth")
 public class UserController {
     public final UserService userService;
     public final JwtTokenProvider jwtTokenProvider;
     private final UserRepository userRepository;
+    private final KakaoOAuthService KakaoOAuthService;
 
-    public UserController(UserService userService, JwtTokenProvider jwtTokenProvider, UserRepository userRepository) {
+    public UserController(UserService userService, JwtTokenProvider jwtTokenProvider, UserRepository userRepository, KakaoOAuthService KakaoOAuthService) {
         this.userService = userService;
         this.jwtTokenProvider = jwtTokenProvider;
         this.userRepository = userRepository;
+        this.KakaoOAuthService = KakaoOAuthService;
     } // end of 생성자
     
     // 회원가입 http://localhost:8080/api/auth/signup
@@ -163,5 +168,13 @@ public class UserController {
 
         return ResponseEntity.ok("로그아웃 성공");
     } // end of logout
+
+    // // 소셜 로그인 http://localhost:8080/api/auth/kakao
+    @PostMapping("/kakao")
+    public ResponseEntity<?> kakaoLogin(@RequestBody Map<String, String> body, HttpServletResponse response) {
+        String code = body.get("code");
+        LoginResponseDTO tokens = KakaoOAuthService.kakaoLogin(code, response);
+        return ResponseEntity.ok(tokens);
+    }
     
 }
